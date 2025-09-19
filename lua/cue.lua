@@ -1,5 +1,5 @@
 -- main module file
-local module = require("plugin_name.module")
+local module = require("cue.module")
 
 ---@class Config
 ---@field opt string Your config option
@@ -7,21 +7,25 @@ local config = {
   opt = "Hello!",
 }
 
----@class MyModule
+---@class CueModule
+---@field config Config
+---@field setup fun(args: Config?)
+---@field hello fun(): string
 local M = {}
 
 ---@type Config
 M.config = config
 
 ---@param args Config?
--- you can define your setup function here. Usually configurations can be merged, accepting outside params and
--- you can also put some validation here for those.
 M.setup = function(args)
   M.config = vim.tbl_deep_extend("force", M.config, args or {})
 end
 
+---@return string
 M.hello = function()
-  return module.my_first_function(M.config.opt)
+  local message = module.my_first_function(M.config.opt)
+  print(message)
+  return message
 end
 
 return M
