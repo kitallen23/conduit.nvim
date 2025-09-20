@@ -1,6 +1,3 @@
--- main module file
-local module = require("cue.module")
-
 ---@class Config
 ---@field opt string Your config option
 local config = {
@@ -21,11 +18,19 @@ M.setup = function(args)
   M.config = vim.tbl_deep_extend("force", M.config, args or {})
 end
 
----@return string
-M.hello = function()
-  local message = module.my_first_function(M.config.opt)
-  print(message)
-  return message
+---@param prompt string
+function M.copy(prompt)
+  vim.notify(prompt)
+end
+
+M.ask = function(default)
+  require("cue.input").input(
+    default, function(value)
+      if value and value ~= "" then
+        M.copy(value)
+      end
+    end
+  )
 end
 
 return M
