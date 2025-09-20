@@ -4,8 +4,7 @@ local M = {}
 ---@param on_confirm fun(value: string|nil)
 function M.input(default, on_confirm)
   vim.ui.input(
-  -- vim.tbl_deep_extend("force", require("cue.config").opts.input, {
-    vim.tbl_deep_extend("force", {}, {
+    vim.tbl_deep_extend("force", require("cue.config").opts.input, {
       default = default,
     }),
     on_confirm
@@ -42,6 +41,23 @@ function M.highlight(input)
   end)
 
   return hls
+end
+
+---Highlights context placeholders in the given buffer's first line.
+---@param buf number
+function M.highlight_buffer(buf)
+  local input = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ""
+  local hls = M.highlight(input)
+
+  local ns_id = vim.api.nvim_create_namespace("opencode_placeholders")
+  vim.api.nvim_buf_clear_namespace(buf, ns_id, 0, -1)
+
+  for _, hl in ipairs(hls) do
+    vim.api.nvim_buf_set_extmark(buf, ns_id, 0, hl[1], {
+      end_col = hl[2],
+      hl_group = hl[3],
+    })
+  end
 end
 
 return M

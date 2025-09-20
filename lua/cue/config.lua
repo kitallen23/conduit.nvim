@@ -22,7 +22,7 @@ local defaults = {
     -- TODO: Fix / implement these
     -- ["@buffer"] = { description = "Current buffer", value = require("opencode.context").buffer },
     -- ["@buffers"] = { description = "Open buffers", value = require("opencode.context").buffers },
-    -- ["@cursor"] = { description = "Cursor position", value = require("opencode.context").cursor_position },
+    ["@cursor"] = { description = "Cursor position", value = require("cue.context").cursor_position },
     -- ["@selection"] = { description = "Selected text", value = require("opencode.context").visual_selection },
     -- ["@visible"] = { description = "Visible text", value = require("opencode.context").visible_text },
     -- ["@diagnostic"] = {
