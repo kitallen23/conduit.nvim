@@ -1,47 +1,85 @@
-# A Neovim Plugin Template
+# cue.nvim
 
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/ellisonleao/nvim-plugin-template/lint-test.yml?branch=main&style=for-the-badge)
-![Lua](https://img.shields.io/badge/Made%20with%20Lua-blueviolet.svg?style=for-the-badge&logo=lua)
+A tool-agnostic Neovim plugin designed to make working with terminal-based AI coding assistants as seamless as possible. Generate AI prompts with relevant editor context and copy them to system clipboard for use with any AI CLI tool.
 
-A template repository for Neovim plugins.
+## Credits
 
-## Using it
+This project was bootstrapped from [ellisonleao/nvim-plugin-template](https://github.com/ellisonleao/nvim-plugin-template).
 
-Via `gh`:
+The core functionality is based on [NickvanDyke/opencode.nvim](https://github.com/NickvanDyke/opencode.nvim). Much of the code was adapted from that project.
 
+## Features
+
+- **Tool-agnostic design** - Works with any terminal-based AI coding assistant (Claude Code, opencode, Codex, etc.)
+- **Interactive prompt input** with completions, syntax highlighting, and normal-mode support
+- **Built-in prompt library** with ability to define custom prompts
+- **Automatic context injection** including:
+  - Buffer content with line numbers
+  - Visual selections
+  - Cursor position
+  - Diagnostics
+  - File paths
+- **Seamless workflow** - Generate prompts in Neovim, paste into your AI tool of choice
+- **Sensible defaults** with granular configuration options
+
+## Installation
+
+Using [lazy.nvim](https://github.com/folke/lazy.nvim):
+
+```lua
+{
+  "kitallen23/cue.nvim",
+  config = function()
+    -- TODO
+  end,
+}
 ```
-$ gh repo create my-plugin -p ellisonleao/nvim-plugin-template
+
+Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
+
+```lua
+use {
+  "kitallen23/cue.nvim",
+  config = function()
+    -- TODO
+  end
+}
 ```
 
-Via github web page:
+## Usage
 
-Click on `Use this template`
+Call the Lua function directly or map it to a key combination:
 
-![](https://docs.github.com/assets/cb-36544/images/help/repository/use-this-template-button.png)
+```lua
+-- Call directly
+:lua require('cue').ask()
 
-## Features and structure
-
-- 100% Lua
-- Github actions for:
-  - running tests using [plenary.nvim](https://github.com/nvim-lua/plenary.nvim) and [busted](https://olivinelabs.com/busted/)
-  - check for formatting errors (Stylua)
-  - vimdocs autogeneration from README.md file
-  - luarocks release (LUAROCKS_API_KEY secret configuration required)
-
-### Plugin structure
-
+-- Or map to a key combination (example)
+vim.keymap.set('n', '<leader>ai', function() require('cue').ask('@cursor: ') end, { desc = 'Generate cue' })
+vim.keymap.set('v', '<leader>ai', function() require('cue').ask('@selection: ') end, { desc = 'Generate cue about selection' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() require('cue').select() end, { desc = 'Select cue prompt' })
 ```
-.
-├── lua
-│   ├── plugin_name
-│   │   └── module.lua
-│   └── plugin_name.lua
-├── Makefile
-├── plugin
-│   └── plugin_name.lua
-├── README.md
-├── tests
-│   ├── minimal_init.lua
-│   └── plugin_name
-│       └── plugin_name_spec.lua
+
+### Workflow
+
+1. Call `:lua require("cue").ask()` (or use your mapped key) in Neovim to generate a prompt with relevant context
+2. The prompt is automatically copied to your system clipboard
+3. Switch to your terminal and paste into any AI coding assistant
+4. Get context-aware assistance without manual copy-pasting of code snippets
+
+Works seamlessly with tools like:
+- Claude Code
+- Aider
+- opencode
+- OpenAI Codex
+- Any other terminal-based AI coding tool
+
+## Configuration
+
+```lua
+-- TODO
 ```
+
+## License
+
+MIT
