@@ -19,15 +19,22 @@ M.setup = function(args)
 end
 
 ---@param prompt string
-function M.copy(prompt)
-  vim.notify(prompt)
+function M.prompt(prompt)
+  prompt = require("cue.context").inject(prompt)
+  local notify = require("cue.config").opts.notify
+  if prompt and prompt ~= "" then
+    vim.fn.setreg('+', prompt)
+    if notify then
+      vim.notify("Prompt copied to clipboard")
+    end
+  end
 end
 
 M.ask = function(default)
   require("cue.input").input(
     default, function(value)
       if value and value ~= "" then
-        M.copy(value)
+        M.prompt(value)
       end
     end
   )

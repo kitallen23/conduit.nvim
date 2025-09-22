@@ -1,5 +1,10 @@
 local M = {}
 
+local function format_path(path)
+  local file_prefix = require("cue.config").opts.file_prefix or ""
+  return string.format("%s%s", file_prefix, path)
+end
+
 local function is_buf_valid(buf)
   return vim.api.nvim_buf_is_loaded(buf) and vim.api.nvim_get_option_value("buftype", { buf = buf }) == ""
 end
@@ -25,9 +30,6 @@ local function last_used_valid_win()
 end
 
 ---Given a buffer number, returns the file path relative to Neovim's CWD, or nil if not associated with a file.
----Opencode seems to easily ignore directories in the path above its CWD, so it's okay to use paths relative to Neovim's CWD,
----given that we verify the former is inside the latter.
----Unless the user does something weird like set opts.port to an opencode running in an entirely different directory.
 ---@param buf number
 ---@return string|nil
 local function file_path(buf)
@@ -43,7 +45,7 @@ end
 ---@param prompt string
 ---@return string
 function M.inject(prompt)
-  local contexts = require("opencode.config").opts.contexts or {}
+  local contexts = require("cue.config").opts.contexts or {}
   local placeholders = vim.tbl_keys(contexts)
   -- Replace the longest placeholders first, in case they overlap. e.g. @buffer should not replace "@buffers" in the prompt.
   table.sort(placeholders, function(a, b)
@@ -65,7 +67,7 @@ end
 ---The current buffer's file path.
 ---@return string|nil
 function M.buffer()
-  return file_path(vim.api.nvim_win_get_buf(last_used_valid_win()))
+  return format_path(file_path(vim.api.nvim_win_get_buf(last_used_valid_win())))
 end
 
 ---All open buffers' file paths.
@@ -77,7 +79,7 @@ function M.buffers()
     if is_buf_valid(buf) then
       local path = file_path(buf)
       if path then
-        table.insert(file_list, path)
+        table.insert(file_list, format_path(path))
       end
     end
   end
@@ -97,7 +99,7 @@ function M.cursor_position()
   local line = pos[1]
   local col = pos[2] + 1 -- Convert to 1-based index
 
-  return string.format("%s:L%d:C%d", file_path(vim.api.nvim_win_get_buf(win)), line, col)
+  return string.format("%s:L%d:C%d", format_path(file_path(vim.api.nvim_win_get_buf(win))), line, col)
 end
 
 ---The visual selection range in the format `file_path:Lstart-end`.
@@ -122,7 +124,7 @@ function M.visual_selection()
     start_line, end_line = end_line, start_line
   end
 
-  return string.format("%s:L%d-%d", path, start_line, end_line)
+  return string.format("%s:L%d-%d", format_path(path), start_line, end_line)
 end
 
 function M.visible_text()
@@ -134,7 +136,7 @@ function M.visible_text()
       if path then
         local start_line = vim.fn.line("w0", win)
         local end_line = vim.fn.line("w$", win)
-        table.insert(visible, string.format("%s:L%d-%d", path, start_line, end_line))
+        table.insert(visible, string.format("%s:L%d-%d", format_path(path), start_line, end_line))
       end
     end
   end
@@ -170,7 +172,7 @@ function M.diagnostics(curr_line_only)
     message = string.format(
       "%s %s:L%d:C%d-L%d:C%d: (%s) %s",
       message,
-      file_path(buf),
+      format_path(file_path(buf)),
       start_line,
       start_col,
       end_line,
@@ -193,11 +195,11 @@ function M.quickfix()
 
   local lines = {}
   for _, entry in ipairs(qflist) do
-    local filename = entry.bufnr ~= 0 and file_path(entry.bufnr) or nil
-    if filename then
+    local path = entry.bufnr ~= 0 and file_path(entry.bufnr) or nil
+    if path then
       local lnum = entry.lnum
       local col = entry.col
-      table.insert(lines, string.format("%s:L%d:C%d", filename, lnum, col))
+      table.insert(lines, string.format("%s:L%d:C%d", format_path(path), lnum, col))
     end
   end
   local result = table.concat(lines, ", ")
@@ -219,24 +221,71 @@ function M.git_diff()
   return nil
 end
 
----Tags from the `grapple.nvim` plugin.
+---The git diff for the hunk at cursor position, merging adjacent hunks.
+---Requires gitsigns.
 ---@return string|nil
-function M.grapple_tags()
-  local is_available, grapple = pcall(require, "grapple")
-  if not is_available then
-    return nil
+function M.git_diff_hunk()
+  -- Try gitsigns actions first
+  local ok, actions = pcall(require, 'gitsigns.actions')
+  if ok then
+    local win = last_used_valid_win()
+    local buf = vim.api.nvim_win_get_buf(win)
+    local cursor_line = vim.api.nvim_win_get_cursor(win)[1]
+
+    local hunks = actions.get_hunks(buf)
+    if hunks then
+      -- Find all hunks that should be merged (adjacent or close together)
+      local target_hunks = {}
+      for _, hunk in ipairs(hunks) do
+        if hunk.added and hunk.added.start and hunk.added.count then
+          local start_line = hunk.added.start
+          local end_line = hunk.added.start + hunk.added.count - 1
+
+          if cursor_line >= start_line and cursor_line <= end_line then
+            -- Found a hunk containing cursor, now collect adjacent hunks
+            table.insert(target_hunks, hunk)
+
+            -- Look for adjacent hunks (literally touching)
+            for _, other_hunk in ipairs(hunks) do
+              if other_hunk ~= hunk and other_hunk.added and other_hunk.added.start then
+                local other_start = other_hunk.added.start
+                local other_end = other_hunk.added.start + (other_hunk.added.count or 1) - 1
+
+                -- Include only if literally adjacent (touching lines)
+                if other_start == end_line + 1 or start_line == other_end + 1 then
+                  table.insert(target_hunks, other_hunk)
+                end
+              end
+            end
+            break
+          end
+        end
+      end
+
+      if #target_hunks > 0 then
+        -- Sort hunks by start line
+        table.sort(target_hunks, function(a, b)
+          return (a.added and a.added.start or 0) < (b.added and b.added.start or 0)
+        end)
+
+        -- Combine all the hunks
+        local result = {}
+        for _, hunk in ipairs(target_hunks) do
+          if hunk.head then
+            table.insert(result, hunk.head)
+          end
+          if hunk.lines then
+            for _, line in ipairs(hunk.lines) do
+              table.insert(result, line)
+            end
+          end
+        end
+        return table.concat(result, '\n')
+      end
+    end
   end
 
-  local tags = grapple.tags()
-  if not tags or #tags == 0 then
-    return nil
-  end
-
-  local paths = {}
-  for _, tag in ipairs(tags) do
-    table.insert(paths, tag.path)
-  end
-  return table.concat(paths, ", ")
+  return nil
 end
 
 return M

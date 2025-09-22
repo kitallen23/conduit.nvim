@@ -13,28 +13,30 @@ vim.g.cue_opts = vim.g.cue_opts
 ---@field prompts? table<string, cue.Prompt>
 ---
 ---Input options for `ask` — see [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md) (if enabled).
+---@diagnostic disable-next-line: undefined-doc-name
 ---@field input? snacks.input.Opts
+---@field filePrefix? string
+---@field notify? boolean
 local defaults = {
   contexts = {
     ---@class cue.Context
     ---@field description string Description of the context. Shown in completion docs.
     ---@field value fun(): string|nil Function that returns the text that will replace the placeholder.
-    -- TODO: Fix / implement these
-    -- ["@buffer"] = { description = "Current buffer", value = require("opencode.context").buffer },
-    -- ["@buffers"] = { description = "Open buffers", value = require("opencode.context").buffers },
+    ["@buffer"] = { description = "Current buffer", value = require("cue.context").buffer },
+    ["@buffers"] = { description = "Open buffers", value = require("cue.context").buffers },
     ["@cursor"] = { description = "Cursor position", value = require("cue.context").cursor_position },
-    -- ["@selection"] = { description = "Selected text", value = require("opencode.context").visual_selection },
-    -- ["@visible"] = { description = "Visible text", value = require("opencode.context").visible_text },
-    -- ["@diagnostic"] = {
-    --   description = "Current line diagnostics",
-    --   value = function()
-    --     return require("opencode.context").diagnostics(true)
-    --   end,
-    -- },
-    -- ["@diagnostics"] = { description = "Current buffer diagnostics", value = require("opencode.context").diagnostics },
-    -- ["@quickfix"] = { description = "Quickfix list", value = require("opencode.context").quickfix },
-    -- ["@diff"] = { description = "Git diff", value = require("opencode.context").git_diff },
-    -- ["@grapple"] = { description = "Grapple tags", value = require("opencode.context").grapple_tags },
+    ["@selection"] = { description = "Selected text", value = require("cue.context").visual_selection },
+    ["@visible"] = { description = "Visible text", value = require("cue.context").visible_text },
+    ["@diagnostic"] = {
+      description = "Current line diagnostics",
+      value = function()
+        return require("cue.context").diagnostics(true)
+      end,
+    },
+    ["@diagnostics"] = { description = "Current buffer diagnostics", value = require("cue.context").diagnostics },
+    ["@quickfix"] = { description = "Quickfix list", value = require("cue.context").quickfix },
+    ["@diff"] = { description = "Git diff", value = require("cue.context").git_diff },
+    ["@hunk"] = { description = "Git diff hunk", value = require("cue.context").git_diff_hunk },
   },
   prompts = {
     ---@class cue.Prompt
@@ -64,19 +66,21 @@ local defaults = {
       description = "Review buffer",
       prompt = "Review @buffer for correctness and readability",
     },
-    review_diff = {
-      description = "Review git diff",
-      prompt = "Review the following git diff for correctness and readability:\n@diff",
+    review_hunk_diff = {
+      description = "Review git hunk diff",
+      prompt = "Review the following git diff for correctness and readability:\n@hunk",
     },
   },
   input = {
-    prompt = "Ask cue: ",
+    prompt = "Cue: ",
     highlight = require("cue.input").highlight,
     -- Options below here only apply to [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md).
     icon = "󰊠 ",
+    expand = true,
     win = {
       title_pos = "left",
       relative = "cursor",
+      height = 1,
       row = -3, -- Row above the cursor
       col = 0,  -- Align with the cursor
       b = {
@@ -99,6 +103,8 @@ local defaults = {
       end,
     },
   },
+  file_prefix = "@",
+  notify = true,
 }
 
 ---@module 'snacks'
