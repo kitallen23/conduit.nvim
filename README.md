@@ -1,4 +1,4 @@
-# cue.nvim
+# conduit.nvim
 
 A tool-agnostic Neovim plugin designed to make working with terminal-based AI coding assistants as seamless as possible. Generate AI prompts with relevant editor context and copy them to system clipboard for use with any AI CLI tool.
 
@@ -26,7 +26,7 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 
 ```lua
 {
-  "kitallen23/cue.nvim",
+  "kitallen23/conduit.nvim",
   config = function()
     -- TODO
   end,
@@ -37,7 +37,7 @@ Using [packer.nvim](https://github.com/wbthomason/packer.nvim):
 
 ```lua
 use {
-  "kitallen23/cue.nvim",
+  "kitallen23/conduit.nvim",
   config = function()
     -- TODO
   end
@@ -50,17 +50,17 @@ Call the Lua function directly or map it to a key combination:
 
 ```lua
 -- Call directly
-:lua require('cue').ask()
+:lua require('conduit').ask()
 
 -- Or map to a key combination (example)
-vim.keymap.set('n', '<leader>ai', function() require('cue').ask('@cursor: ') end, { desc = 'Generate cue' })
-vim.keymap.set('v', '<leader>ai', function() require('cue').ask('@selection: ') end, { desc = 'Generate cue about selection' })
-vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() require('cue').select() end, { desc = 'Select cue prompt' })
+vim.keymap.set('n', '<leader>ai', function() require('conduit').ask('@cursor: ') end, { desc = 'Generate conduit prompt' })
+vim.keymap.set('v', '<leader>ai', function() require('conduit').ask('@selection: ') end, { desc = 'Generate conduit prompt about selection' })
+vim.keymap.set({ 'n', 'v' }, '<leader>ap', function() require('conduit').select() end, { desc = 'Select conduit prompt' })
 ```
 
 ### Workflow
 
-1. Call `:lua require("cue").ask()` (or use your mapped key) in Neovim to generate a prompt with relevant context
+1. Call `:lua require("conduit").ask()` (or use your mapped key) in Neovim to generate a prompt with relevant context
 2. The prompt is automatically copied to your system clipboard
 3. Switch to your terminal and paste into any AI coding assistant
 4. Get context-aware assistance without manual copy-pasting of code snippets

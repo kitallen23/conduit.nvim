@@ -1,7 +1,7 @@
 local M = {}
 
 local function format_path(path)
-  local file_prefix = require("cue.config").opts.file_prefix or ""
+  local file_prefix = require("conduit.config").opts.file_prefix or ""
   return string.format("%s%s", file_prefix, path)
 end
 
@@ -45,7 +45,7 @@ end
 ---@param prompt string
 ---@return string
 function M.inject(prompt)
-  local contexts = require("cue.config").opts.contexts or {}
+  local contexts = require("conduit.config").opts.contexts or {}
   local placeholders = vim.tbl_keys(contexts)
   -- Replace the longest placeholders first, in case they overlap. e.g. @buffer should not replace "@buffers" in the prompt.
   table.sort(placeholders, function(a, b)

@@ -9,7 +9,7 @@ local M = {}
 ---@param on_confirm fun(value: string|nil) Callback function called when input is confirmed or cancelled
 function M.input(default, on_confirm)
   vim.ui.input(
-    vim.tbl_deep_extend("force", require("cue.config").opts.input, {
+    vim.tbl_deep_extend("force", require("conduit.config").opts.input, {
       default = default,
     }),
     on_confirm
@@ -21,7 +21,7 @@ end
 ---@param input string
 ---@return table[]
 function M.highlight(input)
-  local placeholders = vim.tbl_keys(require("cue.config").opts.contexts)
+  local placeholders = vim.tbl_keys(require("conduit.config").opts.contexts)
   local hls = {}
 
   for _, placeholder in ipairs(placeholders) do

@@ -7,8 +7,8 @@ local M = {}
 ---
 ---@param prompt string The raw prompt string containing context placeholders
 function M.prompt(prompt)
-  prompt = require("cue.context").inject(prompt)
-  local notify = require("cue.config").opts.notify
+  prompt = require("conduit.context").inject(prompt)
+  local notify = require("conduit.config").opts.notify
   if prompt and prompt ~= "" then
     vim.fn.setreg('+', prompt)
     if notify then
@@ -21,7 +21,7 @@ end
 --- - Highlights `opts.contexts` in the input.
 ---@param default? string Text to prefill the input with.
 function M.ask(default)
-  require("cue.input").input(
+  require("conduit.input").input(
     default, function(value)
       if value and value ~= "" then
         M.prompt(value)

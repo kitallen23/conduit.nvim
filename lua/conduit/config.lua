@@ -1,16 +1,16 @@
 local M = {}
 
----Your `cue.nvim` configuration.
----@type cue.Opts|nil
-vim.g.cue_opts = vim.g.cue_opts
+---Your `conduit.nvim` configuration.
+---@type conduit.Opts|nil
+vim.g.conduit_opts = vim.g.conduit_opts
 
----@class cue.Opts
+---@class conduit.Opts
 ---
 ---Contexts to inject into prompts, keyed by their placeholder.
----@field contexts? table<string, cue.Context>
+---@field contexts? table<string, conduit.Context>
 ---
 ---Prompts to select from.
----@field prompts? table<string, cue.Prompt>
+---@field prompts? table<string, conduit.Prompt>
 ---
 ---Input options for `ask` — see [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md) (if enabled).
 ---@diagnostic disable-next-line: undefined-doc-name
@@ -19,29 +19,29 @@ vim.g.cue_opts = vim.g.cue_opts
 ---@field notify? boolean
 local defaults = {
   contexts = {
-    ---@class cue.Context
+    ---@class conduit.Context
     ---@field description string Description of the context. Shown in completion docs.
     ---@field value fun(): string|nil Function that returns the text that will replace the placeholder.
-    ["@buffer"] = { description = "Current buffer", value = require("cue.context").buffer },
-    ["@buffers"] = { description = "Open buffers", value = require("cue.context").buffers },
-    ["@cursor"] = { description = "Cursor position", value = require("cue.context").cursor_position },
-    ["@selection"] = { description = "Selected text", value = require("cue.context").visual_selection },
-    ["@visible"] = { description = "Visible text", value = require("cue.context").visible_text },
+    ["@buffer"] = { description = "Current buffer", value = require("conduit.context").buffer },
+    ["@buffers"] = { description = "Open buffers", value = require("conduit.context").buffers },
+    ["@cursor"] = { description = "Cursor position", value = require("conduit.context").cursor_position },
+    ["@selection"] = { description = "Selected text", value = require("conduit.context").visual_selection },
+    ["@visible"] = { description = "Visible text", value = require("conduit.context").visible_text },
     ["@diagnostic"] = {
       description = "Current line diagnostics",
       value = function()
-        return require("cue.context").diagnostics(true)
+        return require("conduit.context").diagnostics(true)
       end,
     },
-    ["@diagnostics"] = { description = "Current buffer diagnostics", value = require("cue.context").diagnostics },
-    ["@quickfix"] = { description = "Quickfix list", value = require("cue.context").quickfix },
-    ["@diff"] = { description = "Git diff", value = require("cue.context").git_diff },
-    ["@hunk"] = { description = "Git diff hunk", value = require("cue.context").git_diff_hunk },
+    ["@diagnostics"] = { description = "Current buffer diagnostics", value = require("conduit.context").diagnostics },
+    ["@quickfix"] = { description = "Quickfix list", value = require("conduit.context").quickfix },
+    ["@diff"] = { description = "Git diff", value = require("conduit.context").git_diff },
+    ["@hunk"] = { description = "Git diff hunk", value = require("conduit.context").git_diff_hunk },
   },
   prompts = {
-    ---@class cue.Prompt
+    ---@class conduit.Prompt
     ---@field description string Description of the prompt. Shown in selection menu.
-    ---@field prompt string The prompt to send to `cue`, with placeholders for context like `@cursor`, `@buffer`, etc.
+    ---@field prompt string The prompt to send to `conduit`, with placeholders for context like `@cursor`, `@buffer`, etc.
     explain = {
       description = "Explain code near cursor",
       prompt = "Explain @cursor and its context",
@@ -72,8 +72,8 @@ local defaults = {
     },
   },
   input = {
-    prompt = "Cue: ",
-    highlight = require("cue.input").highlight,
+    prompt = "Conduit: ",
+    highlight = require("conduit.input").highlight,
     -- Options below here only apply to [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md).
     icon = "󰊠 ",
     expand = true,
@@ -89,15 +89,15 @@ local defaults = {
       },
       bo = {
         -- Custom filetype to enable `blink.cmp` source on
-        filetype = "cue_ask",
+        filetype = "conduit_ask",
       },
       on_buf = function(win)
         -- `snacks.input` doesn't seem to actually call `opts.highlight`... so highlight its buffer ourselves
         vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "BufWinEnter" }, {
-          group = vim.api.nvim_create_augroup("CueAskHighlight", { clear = true }),
+          group = vim.api.nvim_create_augroup("ConduitAskHighlight", { clear = true }),
           buffer = win.buf,
           callback = function(args)
-            require("cue.input").highlight_buffer(args.buf)
+            require("conduit.input").highlight_buffer(args.buf)
           end,
         })
       end,
@@ -109,8 +109,8 @@ local defaults = {
 
 ---@module 'snacks'
 
----Plugin options, lazily merged from `defaults` and `vim.g.cue_opts`.
----@type cue.Opts
-M.opts = vim.tbl_deep_extend("force", vim.deepcopy(defaults), vim.g.cue_opts or {})
+---Plugin options, lazily merged from `defaults` and `vim.g.conduit_opts`.
+---@type conduit.Opts
+M.opts = vim.tbl_deep_extend("force", vim.deepcopy(defaults), vim.g.conduit_opts or {})
 
 return M
