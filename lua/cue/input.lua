@@ -1,7 +1,12 @@
 local M = {}
 
----@param default? string
----@param on_confirm fun(value: string|nil)
+--- Create an interactive input prompt with syntax highlighting for context placeholders.
+--- This function wraps vim.ui.input with the plugin's configured input options,
+--- merging them with a default value. The input will highlight context placeholders
+--- like @buffer, @cursor, @diagnostics based on the plugin configuration.
+---
+---@param default? string Optional text to prefill the input field
+---@param on_confirm fun(value: string|nil) Callback function called when input is confirmed or cancelled
 function M.input(default, on_confirm)
   vim.ui.input(
     vim.tbl_deep_extend("force", require("cue.config").opts.input, {
