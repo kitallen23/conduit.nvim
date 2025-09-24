@@ -46,6 +46,10 @@ local defaults = {
       description = "Explain code near cursor",
       prompt = "Explain @cursor and its context",
     },
+    document = {
+      description = "Document selection",
+      prompt = "Add documentation comments for @selection",
+    },
     fix = {
       description = "Fix diagnostics",
       prompt = "Fix these @diagnostics",
@@ -53,10 +57,6 @@ local defaults = {
     optimize = {
       description = "Optimize selection",
       prompt = "Optimize @selection for performance and readability",
-    },
-    document = {
-      description = "Document selection",
-      prompt = "Add documentation comments for @selection",
     },
     test = {
       description = "Add tests for selection",
@@ -72,7 +72,7 @@ local defaults = {
     },
   },
   input = {
-    prompt = "Conduit: ",
+    prompt = "Prompt conduit: ",
     highlight = require("conduit.input").highlight,
     -- Options below here only apply to [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md).
     icon = "󰊠 ",
