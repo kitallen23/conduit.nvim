@@ -2,11 +2,9 @@
 
 A tool-agnostic Neovim plugin designed to make working with terminal-based AI coding assistants as seamless as possible. Generate AI prompts with relevant editor context and copy them to system clipboard for use with any AI CLI tool.
 
-## Credits
+*Based on [opencode.nvim](https://github.com/NickvanDyke/opencode.nvim) but with a tool-agnostic design.*
 
-This project was bootstrapped from [ellisonleao/nvim-plugin-template](https://github.com/ellisonleao/nvim-plugin-template).
-
-The core functionality is based on [NickvanDyke/opencode.nvim](https://github.com/NickvanDyke/opencode.nvim). Much of the code was adapted from that project.
+> **Note:** This plugin works standalone but is greatly enhanced when used with [snacks.nvim](https://github.com/folke/snacks.nvim) for an improved input experience.
 
 ## Features
 
@@ -79,6 +77,12 @@ Works seamlessly with tools like:
 ```lua
 -- TODO
 ```
+
+## Credits
+
+This project was bootstrapped from [ellisonleao/nvim-plugin-template](https://github.com/ellisonleao/nvim-plugin-template).
+
+The core functionality is based on [NickvanDyke/opencode.nvim](https://github.com/NickvanDyke/opencode.nvim). Much of the code was adapted from that project.
 
 ## License
 
