@@ -12,7 +12,7 @@ function M.prompt(prompt)
   if prompt and prompt ~= "" then
     vim.fn.setreg('+', prompt)
     if notify then
-      vim.notify("Prompt copied to clipboard")
+      vim.notify("Prompt copied to clipboard", vim.log.levels.INFO)
     end
   end
 end
@@ -46,6 +46,9 @@ function M.select_prompt(default)
   else
     ---@type conduit.Prompt[]
     local prompts = vim.tbl_filter(function(prompt)
+      if not prompt then
+        return false
+      end
       local is_visual = vim.fn.mode():match("[vV\22]")
       -- WARNING: Technically depends on user using built-in `@selection` context by name...
       local does_prompt_use_visual = prompt.prompt:match("@selection")
