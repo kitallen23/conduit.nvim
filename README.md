@@ -15,8 +15,7 @@ Based on [opencode.nvim](https://github.com/NickvanDyke/opencode.nvim) but with 
   - Buffer content with line numbers
   - Visual selections
   - Cursor position
-  - Diagnostics
-  - File paths
+  - ... and many more; see [Context](#context) below
 - **Seamless workflow** - Generate prompts in Neovim, paste into your AI tool of choice
 - **Sensible defaults** with granular configuration options
 
