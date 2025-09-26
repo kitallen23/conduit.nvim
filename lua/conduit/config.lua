@@ -6,6 +6,12 @@ vim.g.conduit_opts = vim.g.conduit_opts
 
 ---@class conduit.Opts
 ---
+---A prefix that's automatically added to the start of file paths
+---@field filePrefix? string
+---
+---Set to false to disable notifications
+---@field notify? boolean
+---
 ---Contexts to inject into prompts, keyed by their placeholder.
 ---@field contexts? table<string, conduit.Context>
 ---
@@ -15,9 +21,10 @@ vim.g.conduit_opts = vim.g.conduit_opts
 ---Input options for `ask` — see [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md) (if enabled).
 ---@diagnostic disable-next-line: undefined-doc-name
 ---@field input? snacks.input.Opts
----@field filePrefix? string
----@field notify? boolean
 local defaults = {
+  file_prefix = "@",
+  notify = true,
+  auto_register_cmp_sources = { "conduit", "buffer" },
   contexts = {
     ---@class conduit.Context
     ---@field description string Description of the context. Shown in completion docs.
@@ -76,6 +83,8 @@ local defaults = {
     highlight = require("conduit.input").highlight,
     -- Options below here only apply to [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md).
     icon = "󰊠 ",
+    -- completion = "customlist,v:lua.require'conduit.cmp.omni'",
+    completion = "customlist,v:lua.require'conduit.cmp.omni'",
     expand = true,
     win = {
       title_pos = "left",
@@ -92,6 +101,18 @@ local defaults = {
         filetype = "conduit_ask",
       },
       on_buf = function(win)
+        -- Wait as long as possible to check for `blink.cmp` loaded - many users lazy-load on `InsertEnter`.
+        -- And OptionSet :runtimepath didn't seem to fire for lazy.nvim.
+        vim.api.nvim_create_autocmd("InsertEnter", {
+          once = true,
+          buffer = win.buf,
+          callback = function()
+            if package.loaded["blink.cmp"] then
+              require("conduit.cmp.blink").setup(require("conduit.config").opts.auto_register_cmp_sources)
+            end
+          end,
+        })
+
         -- `snacks.input` doesn't seem to actually call `opts.highlight`... so highlight its buffer ourselves
         vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "BufWinEnter" }, {
           group = vim.api.nvim_create_augroup("ConduitAskHighlight", { clear = true }),
@@ -103,8 +124,6 @@ local defaults = {
       end,
     },
   },
-  file_prefix = "@",
-  notify = true,
 }
 
 ---@module 'snacks'
