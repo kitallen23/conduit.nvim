@@ -33,36 +33,46 @@ end
 ---Select a prompt from `opts.prompts` to copy to the '+' register.
 ---Filters prompts based on visual mode: shows only @selection prompts when text is selected,
 ---and only non-@selection prompts when no text is selected.
-function M.select_prompt()
-  ---@type conduit.Prompt[]
-  local prompts = vim.tbl_filter(function(prompt)
-    local is_visual = vim.fn.mode():match("[vV\22]")
-    -- WARNING: Technically depends on user using built-in `@selection` context by name...
-    local does_prompt_use_visual = prompt.prompt:match("@selection")
-    if is_visual then
-      return does_prompt_use_visual
+---@param default? string Prompt to use.
+function M.select_prompt(default)
+  if default and default ~= "" then
+    ---@type conduit.Prompt
+    local choice = require("conduit.config").opts.prompts[default]
+    if choice then
+      M.prompt(choice.prompt)
     else
-      return not does_prompt_use_visual
+      vim.notify("Prompt '" .. default .. "' not found", vim.log.levels.WARN)
     end
-  end, vim.tbl_values(require("conduit.config").opts.prompts))
-
-  vim.ui.select(
-    prompts,
-    {
-      prompt = "Prompt conduit: ",
-      ---@param item conduit.Prompt
-      format_item = function(item)
-        return item.description
-      end,
-      border = "single"
-    },
-    ---@param choice conduit.Prompt
-    function(choice)
-      if choice then
-        M.prompt(choice.prompt)
+  else
+    ---@type conduit.Prompt[]
+    local prompts = vim.tbl_filter(function(prompt)
+      local is_visual = vim.fn.mode():match("[vV\22]")
+      -- WARNING: Technically depends on user using built-in `@selection` context by name...
+      local does_prompt_use_visual = prompt.prompt:match("@selection")
+      if is_visual then
+        return does_prompt_use_visual
+      else
+        return not does_prompt_use_visual
       end
-    end
-  )
+    end, vim.tbl_values(require("conduit.config").opts.prompts))
+
+    vim.ui.select(
+      prompts,
+      {
+        prompt = "Prompt conduit: ",
+        ---@param item conduit.Prompt
+        format_item = function(item)
+          return item.description
+        end
+      },
+      ---@param choice conduit.Prompt
+      function(choice)
+        if choice then
+          M.prompt(choice.prompt)
+        end
+      end
+    )
+  end
 end
 
 return M
