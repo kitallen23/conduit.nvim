@@ -54,7 +54,7 @@ function M.highlight_buffer(buf)
   local input = vim.api.nvim_buf_get_lines(buf, 0, 1, false)[1] or ""
   local hls = M.highlight(input)
 
-  local ns_id = vim.api.nvim_create_namespace("opencode_placeholders")
+  local ns_id = vim.api.nvim_create_namespace("conduit_placeholders")
   vim.api.nvim_buf_clear_namespace(buf, ns_id, 0, -1)
 
   for _, hl in ipairs(hls) do
