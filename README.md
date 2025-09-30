@@ -6,6 +6,10 @@ Based on [opencode.nvim](https://github.com/NickvanDyke/opencode.nvim) but with 
 
 ***Note:** This plugin works standalone but is greatly enhanced when used with [snacks.nvim](https://github.com/folke/snacks.nvim) for an improved input experience.*
 
+## Demo
+
+https://github.com/user-attachments/assets/019be1d9-f16b-4596-b474-45ab2ae1fe8e
+
 ## Features
 
 - **Tool-agnostic design** - Works with any terminal-based AI coding assistant (Claude Code, opencode, Codex, etc.)
@@ -18,10 +22,6 @@ Based on [opencode.nvim](https://github.com/NickvanDyke/opencode.nvim) but with 
   - ... and many more; see [Context](#context) below
 - **Seamless workflow** - Generate prompts in Neovim, paste into your AI tool of choice
 - **Sensible defaults** with granular configuration options
-
-## Demo
-
-https://github.com/kitallen23/conduit.nvim/releases/download/v1.0.0/demo.mp4
 
 ## Installation
 
