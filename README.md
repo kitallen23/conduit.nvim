@@ -21,7 +21,7 @@ Based on [opencode.nvim](https://github.com/NickvanDyke/opencode.nvim) but with 
 
 ## Demo
 
-https://github.com/kitallen23/conduit.nvim/assets/demo.mp4
+https://github.com/kitallen23/conduit.nvim/releases/download/v1.0.0/demo.mp4
 
 ## Installation
 
