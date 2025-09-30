@@ -65,6 +65,10 @@ local defaults = {
       description = "Fix diagnostics",
       prompt = "Fix these @diagnostics",
     },
+    fix_line = {
+      description = "Fix line diagnostic",
+      prompt = "Fix this @diagnostic",
+    },
     optimize = {
       description = "Optimize selection",
       prompt = "Optimize @selection for performance and readability",
