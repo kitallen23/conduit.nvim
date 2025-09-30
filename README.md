@@ -19,6 +19,10 @@ Based on [opencode.nvim](https://github.com/NickvanDyke/opencode.nvim) but with 
 - **Seamless workflow** - Generate prompts in Neovim, paste into your AI tool of choice
 - **Sensible defaults** with granular configuration options
 
+## Demo
+
+https://github.com/kitallen23/conduit.nvim/assets/demo.mp4
+
 ## Installation
 
 Using [lazy.nvim](https://github.com/folke/lazy.nvim):
