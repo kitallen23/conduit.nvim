@@ -108,6 +108,9 @@ Configure the plugin by setting `vim.g.conduit_opts`. Here's the complete defaul
 
 ```lua
 vim.g.conduit_opts = {
+  file_prefix = "@", -- This prefix will be put in front of any file paths
+  notify = true, -- Enable or disable notifications
+  auto_register_cmp_sources = { "conduit" },
   contexts = { -- Default contexts
     ["@buffer"] = { description = "Current buffer", value = require("conduit.context").buffer },
     ["@buffers"] = { description = "Open buffers", value = require("conduit.context").buffers },
@@ -186,8 +189,6 @@ vim.g.conduit_opts = {
       end,
     },
   },
-  file_prefix = "@", -- This prefix will be put in front of any file paths
-  notify = true, -- Enable or disable notifications
 }
 ```
 

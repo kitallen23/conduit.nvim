@@ -6,6 +6,10 @@ vim.g.conduit_opts = vim.g.conduit_opts
 
 ---@class conduit.Opts
 ---
+---Completion sources to automatically register in the `ask` input with [blink.cmp](https://github.com/Saghen/blink.cmp) (if available).
+---Only possible when using [snacks.input](https://github.com/folke/snacks.nvim/blob/main/docs/input.md).
+---@field auto_register_cmp_sources? string[]
+---
 ---A prefix that's automatically added to the start of file paths
 ---@field filePrefix? string
 ---
@@ -24,7 +28,7 @@ vim.g.conduit_opts = vim.g.conduit_opts
 local defaults = {
   file_prefix = "@",
   notify = true,
-  auto_register_cmp_sources = { "conduit", "buffer" },
+  auto_register_cmp_sources = { "conduit" },
   contexts = {
     ---@class conduit.Context
     ---@field description string Description of the context. Shown in completion docs.
