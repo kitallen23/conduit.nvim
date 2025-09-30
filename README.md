@@ -8,7 +8,7 @@ Based on [opencode.nvim](https://github.com/NickvanDyke/opencode.nvim) but with 
 
 ## Demo
 
-https://github.com/user-attachments/assets/019be1d9-f16b-4596-b474-45ab2ae1fe8e
+https://github.com/user-attachments/assets/bc8db443-3c52-4f6f-993c-06bbbdf114ac
 
 ## Features
 
